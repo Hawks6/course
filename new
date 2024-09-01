@@ -1,1 +1,216 @@
+# You are using Python
+# thiru
+class TreeNode:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        if self.root is None:
+            self.root = TreeNode(key)
+        else:
+            self._insert_rec(self.root, key)
+
+    def _insert_rec(self, root, key):
+        if key < root.val:
+            if root.left is None:
+                root.left = TreeNode(key)
+            else:
+                self._insert_rec(root.left, key)
+        else:
+            if root.right is None:
+                root.right = TreeNode(key)
+            else:
+                self._insert_rec(root.right, key)
+
+    def inorder_traversal(self):
+        return self._inorder_rec(self.root)
+
+    def _inorder_rec(self, root):
+        result = []
+        if root:
+            result.extend(self._inorder_rec(root.left))
+            result.append(root.val)
+            result.extend(self._inorder_rec(root.right))
+        return result
+
+
+
+n = int(input().strip())
+characters = input().strip().split()
+
+
+bst = BST()
+
+for char in characters:
+    bst.insert(char)
+
+sorted_characters = bst.inorder_traversal()
+
+print(' '.join(sorted_characters))
+#kayal
+# You are using Python
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, value):
+        new_node = Node(value)
+        if not self.root:
+            self.root = new_node
+            return
+        
+        queue = [self.root]
+        while queue:
+            current = queue.pop(0)
+
+            if not current.left:
+                current.left = new_node
+                break
+            else:
+                queue.append(current.left)
+            
+            if not current.right:
+                current.right = new_node
+                break
+            else:
+                queue.append(current.right)
+
+    def level_order_traversal(self):
+        if not self.root:
+            return []
+        
+        result = []
+        queue = [self.root]
+        while queue:
+            current = queue.pop(0)
+            result.append(current.value)
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+        return result
+
+def main():
+    n = int(input().strip())
+    if n == 0:
+        print("Tree is empty")
+        return
+    
+    values = list(map(int, input().strip().split()))
+    m = int(input().strip())
+    
+    tree = BinaryTree()
+    
+    for value in values:
+        tree.insert(value)
+
+    tree.insert(m)
+    level_order = tree.level_order_traversal()
+    print(" ".join(map(str, level_order)))
+
+if __name__ == "__main__":
+    main()
+#abdul
+# You are using Python
+class AVLTreeNode:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.height = 1
+
+class AVLTree:
+    def insert(self, root, key):
+        if not root:
+            return AVLTreeNode(key)
+
+        if key < root.key:
+            root.left = self.insert(root.left, key)
+        else:
+            root.right = self.insert(root.right, key)
+
+        root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
+        balance = self.get_balance(root)
+
+        
+        if balance > 1 and key < root.left.key:
+            return self.right_rotate(root)
+        
+        if balance < -1 and key > root.right.key:
+            return self.left_rotate(root)
+       
+        if balance > 1 and key > root.left.key:
+            root.left = self.left_rotate(root.left)
+            return self.right_rotate(root)
+        
+        if balance < -1 and key < root.right.key:
+            root.right = self.right_rotate(root.right)
+            return self.left_rotate(root)
+
+        return root
+
+    def left_rotate(self, z):
+        y = z.right
+        T2 = y.left
+        y.left = z
+        z.right = T2
+        z.height = 1 + max(self.get_height(z.left), self.get_height(z.right))
+        y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
+        return y
+
+    def right_rotate(self, z):
+        y = z.left
+        T3 = y.right
+        y.right = z
+        z.left = T3
+        z.height = 1 + max(self.get_height(z.left), self.get_height(z.right))
+        y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
+        return y
+
+    def get_height(self, root):
+        if not root:
+            return 0
+        return root.height
+
+    def get_balance(self, root):
+        if not root:
+            return 0
+        return self.get_height(root.left) - self.get_height(root.right)
+
+    def pre_order(self, root):
+        result = []
+        if root:
+            result.append(root.key)
+            result.extend(self.pre_order(root.left))
+            result.extend(self.pre_order(root.right))
+        return result
+
+def main():
+    n = int(input())
+    plant_codes = list(map(int, input().split()))
+    
+    tree = AVLTree()
+    root = None
+    
+    for code in plant_codes:
+        root = tree.insert(root, code)
+    
+    pre_order_traversal = tree.pre_order(root)
+    
+    print(" ".join(map(str, pre_order_traversal)))
+
+if __name__ == "__main__":
+    main()
